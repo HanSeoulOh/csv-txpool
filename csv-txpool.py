@@ -1,5 +1,6 @@
 import pandas as pd
-from web3 import AsyncWeb3, WebSocketProvider
+from web3 import AsyncWeb3
+from web3.providers import WebsocketProviderV2
 import csv
 from dotenv import dotenv_values
 import asyncio
@@ -11,7 +12,7 @@ import time
 
 config = dotenv_values(".env")
 # Connect to the Ethereum node
-w3 = AsyncWeb3(WebSocketProvider(config['WEBSOCKET_PROVIDER']))
+w3 = AsyncWeb3(WebsocketProviderV2(config['WEBSOCKET_PROVIDER']))
 
 # Check if the connection is successful
 if w3.is_connected():
