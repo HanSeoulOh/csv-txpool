@@ -45,4 +45,6 @@ subscription = w3.eth.subscribe('pendingTransactions', lambda tx_hash: handle_tr
 
 # Keep the script running
 while True:
-    time.sleep(5)
+    timerInterval = 5
+    print(f"Waiting {timerInterval} seconds for new transaction snapshot...")
+    time.sleep(timerInterval)
