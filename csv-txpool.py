@@ -17,8 +17,6 @@ w3 = AsyncWeb3(WebsocketProviderV2(config['WEBSOCKET_PROVIDER']))
 # Check if the connection is successful
 if w3.is_connected():
     print("Connected to Reth node")
-    latest_block = w3.eth.get_block("latest")
-    print(f"Latest block: {latest_block}")
 
 else:
     print("Failed to connect to Reth node")
@@ -58,6 +56,10 @@ async def get_event():
     async with w3:
         newpt_subscription_id = await w3.eth.subscribe("newPendingTransactions")
         newhead_subscription_id = await w3.eth.subscribe("newHeads")
+        
+        latest_block = await w3.eth.get_block("latest")
+        print(f"Latest block: {latest_block}")
+
         async for message in w3.socket.process_subscriptions():
             print(message)
 
@@ -77,10 +79,7 @@ timerInterval = 5
 
 
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
+    asyncio.run(get_event())
     while True:
-        loop.run_until_complete(get_event())
         print(f"Waiting {timerInterval} seconds...")
-        latest_block = w3.eth.blockNumber
-        print(f"Latest block number: {latest_block}")
         time.sleep(timerInterval)
