@@ -20,42 +20,35 @@ if w3.is_connected():
     print(f"Latest block number: {latest_block}")
 else:
     print("Failed to connect to Reth node")
-
-async def get_event():
-    async with w3 as ws:
-        await ws.send('{"jsonrpc": "2.0", "id": 1, "method": "eth_subscribe", "params": ["newPendingTransactions"]}')
-        subscription_response = await ws.recv()
-        print(subscription_response) # {"jsonrpc":"2.0","id":1,"result":"0xd67da23f62a01f58042bc73d3f1c8936"}
-
 # Define the CSV file path
 csv_file_path = config['CSV_FILE_PATH']
 
-# # Initialize the CSV file with headers
-# with open(csv_file_path, mode='w', newline='') as file:
-#     writer = csv.writer(file)
-#     writer.writerow(['tx_hash', 'from_address', 'to_address', 'value', 'gas_price', 'gas_limit', 'nonce', 'input_data', 'timestamp'])
+# Initialize the CSV file with headers
+with open(csv_file_path, mode='w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(['tx_hash', 'from_address', 'to_address', 'value', 'gas_price', 'gas_limit', 'nonce', 'input_data', 'timestamp'])
 
-# # Function to handle and store transactions
-# def handle_transaction(tx_hash):
-#     try:
-#         tx = w3.eth.getTransaction(tx_hash)
-#         if tx:
-#             tx_data = {
-#                 'tx_hash': tx['hash'].hex(),
-#                 'from_address': tx['from'],
-#                 'to_address': tx['to'] if tx['to'] else 'Contract Creation',
-#                 'value': tx['value'],
-#                 'gas_price': tx['gasPrice'],
-#                 'gas_limit': tx['gas'],
-#                 'nonce': tx['nonce'],
-#                 'input_data': tx['input'],
-#                 'timestamp': pd.Timestamp.now()
-#             }
-#             with open(csv_file_path, mode='a', newline='') as file:
-#                 writer = csv.writer(file)
-#                 writer.writerow(tx_data.values())
-#     except Exception as e:
-#         print(f"Error processing transaction {tx_hash}: {e}")
+# Function to handle and store transactions
+def handle_transaction(tx_hash):
+    try:
+        tx = w3.eth.getTransaction(tx_hash)
+        if tx:
+            tx_data = {
+                'tx_hash': tx['hash'].hex(),
+                'from_address': tx['from'],
+                'to_address': tx['to'] if tx['to'] else 'Contract Creation',
+                'value': tx['value'],
+                'gas_price': tx['gasPrice'],
+                'gas_limit': tx['gas'],
+                'nonce': tx['nonce'],
+                'input_data': tx['input'],
+                'timestamp': pd.Timestamp.now()
+            }
+            with open(csv_file_path, mode='a', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow(tx_data.values())
+    except Exception as e:
+        print(f"Error processing transaction {tx_hash}: {e}")
 
 # # Subscribe to pending transactions and process them
 # subscription = w3.eth.subscribe('pendingTransactions', lambda tx_hash: handle_transaction(tx_hash))
@@ -70,7 +63,7 @@ async def get_event():
                 message = await asyncio.wait_for(w3.recv(), timeout=5)
                 response = json.loads(message)
                 txHash = response['params']['result']
-                print(txHash)
+                handle_transaction(txHash)
                 pass
             except Exception as e:
                 print(f"Error: {e}")
