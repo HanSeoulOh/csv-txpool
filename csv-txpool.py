@@ -53,7 +53,9 @@ def handle_transaction(tx_hash):
 # # Subscribe to pending transactions and process them
 # subscription = w3.eth.subscribe('pendingTransactions', lambda tx_hash: handle_transaction(tx_hash))
 async def get_event():
-    async with w3:
+    async with AsyncWeb3.persistent_websocket(
+        WebsocketProviderV2(config['WEBSOCKET_PROVIDER'])
+    ) as w3:
         newpt_subscription_id = await w3.eth.subscribe("newPendingTransactions")
         newhead_subscription_id = await w3.eth.subscribe("newHeads")
         
