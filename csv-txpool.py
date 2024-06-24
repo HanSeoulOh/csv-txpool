@@ -11,7 +11,7 @@ import time
 
 config = dotenv_values(".env")
 # Connect to the Ethereum node
-w3 = Web3(Web3.HTTPProvider(config['WEBSOCKET_PROVIDER']))
+w3 = Web3(Web3.WebsocketProvider(config['WEBSOCKET_PROVIDER']))
 
 # Check if the connection is successful
 if w3.is_connected():
