@@ -60,9 +60,9 @@ async def get_event():
         newhead_subscription_id = await w3.eth.subscribe("newHeads")
         
         latest_block = await w3.eth.get_block("latest")
-        print(f"Latest block: {latest_block}")
+        print(f"Latest block: {latest_block['number']}")
 
-        async for message in w3.socket.process_subscriptions():
+        async for message in w3.ws.process_subscriptions():
             print(message)
 
         # while True:
