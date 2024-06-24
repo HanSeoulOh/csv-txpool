@@ -10,6 +10,12 @@ config = dotenv_values(".env")
 # Connect to the Ethereum node
 w3 = Web3(Web3.WebsocketProvider(config['WEBSOCKET_PROVIDER']))
 
+# Check if the connection is successful
+if w3.isConnected():
+    print("Connected to Reth node")
+else:
+    print("Failed to connect to Reth node")
+
 # Define the CSV file path
 csv_file_path = config['CSV_FILE_PATH']
 
@@ -47,4 +53,6 @@ subscription = w3.eth.subscribe('pendingTransactions', lambda tx_hash: handle_tr
 while True:
     timerInterval = 5
     print(f"Waiting {timerInterval} seconds for new transaction snapshot...")
+    latest_block = w3.eth.blockNumber
+    print(f"Latest block number: {latest_block}")
     time.sleep(timerInterval)
