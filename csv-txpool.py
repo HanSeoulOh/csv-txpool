@@ -14,7 +14,7 @@ config = dotenv_values(".env")
 w3 = Web3(Web3.HTTPProvider(config['WEBSOCKET_PROVIDER']))
 
 # Check if the connection is successful
-if w3.is_Connected():
+if w3.is_connected():
     print("Connected to Reth node")
     latest_block = w3.eth.blockNumber
     print(f"Latest block number: {latest_block}")
