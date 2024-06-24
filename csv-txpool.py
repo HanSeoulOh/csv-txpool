@@ -44,7 +44,7 @@ def handle_transaction(tx_hash):
                 'input_data': tx['input'],
                 'timestamp': pd.Timestamp.now()
             }
-            with open(csv_file_path, mode='a', newline='') as file:
+            with open(csv_file_path, mode='a+', newline='') as file:
                 writer = csv.writer(file)
                 writer.writerow(tx_data.values())
     except Exception as e:
@@ -63,7 +63,13 @@ async def get_event():
         print(f"Latest block: {latest_block['number']}")
 
         async for message in w3.ws.process_subscriptions():
-            print(message)
+            if message['subscription'] == newpt_subscription_id:
+                txHash = message['result']
+                handle_transaction(txHash)
+            elif message['subscription'] == newhead_subscription_id:
+                print(f"New block: {message['result']['number']}")
+            else:
+                print(f"Unknown message: {message}")
 
         # while True:
         #     try:
